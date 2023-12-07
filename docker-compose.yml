@@ -2,7 +2,7 @@ version: '3'
 services:
       flask-app:
                 container_name: flask-container    
-                image: flask-image                      # to provide image name 
+                image: chaitanya305/flask-image                      # to provide image name 
                 build:
                     context: .
                 ports:
