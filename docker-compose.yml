@@ -1,31 +1,37 @@
 version: '3'
 services:
-  
-  backend:
-    build:
-      context: .
-    ports:
-      - "5000:5000"
-    environment:
-      MYSQL_HOST: mysql
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      MYSQL_DB: myDb
-    depends_on:
-      - mysql
+      flask-app:
+                container_name: flask-container    
+                image: flask-image                      # to provide image name 
+                build:
+                    context: .
+                ports:
+                    - 5000:5000
+                networks:
+                    - flask-nw
+                depends_on:
+                     - mysql-app
+           
+      mysql-app:
+                 container_name: mysql_container
+                 image: mysql
+                 networks:
+                      - flask-nw
+                 environment:
+                        MYSQL_ROOT_PASSWORD: pass123
+                        MYSQL_DATABASE: testdb
+                 volumes:
+                      - mysql-volume:/docker-entrypoint-initdb.d       #  name of volume:/path of container 
+                           
 
-  mysql:
-    image: mysql:5.7
-    ports:
-      - "3306:3306"
-    environment:
-      MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: myDb
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-    volumes:
-      - ./message.sql:/docker-entrypoint-initdb.d/message.sql   # Mount sql script into container's /docker-entrypoint-initdb.d directory to get table automatically created
-      - mysql-data:/var/lib/mysql  # Mount the volume for MySQL data storage
+networks:
+        flask-nw:             # name of network you want to create 
+                external: true
 
 volumes:
-  mysql-data:
+        mysql-volume:         # name of volume you want to create 
+                driver: local
+                driver_opts:
+                        device: /home/chaitanya/projects/volume/flask_volume  # local (host) system path 
+                        type: none
+                        o: bind 
