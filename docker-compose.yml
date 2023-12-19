@@ -2,7 +2,7 @@ version: '3'
 services:
       flask-app:
                 container_name: flask-container    
-                image: flask-image                      # to provide image name 
+                image: chaitanya305/flask-image                      # to provide image name 
                 build:
                     context: .
                 ports:
@@ -21,17 +21,9 @@ services:
                         MYSQL_ROOT_PASSWORD: pass123
                         MYSQL_DATABASE: testdb
                  volumes:
-                      - mysql-volume:/docker-entrypoint-initdb.d       #  name of volume:/path of container 
+                      - ./message.sql:/docker-entrypoint-initdb.d/message.sql     #  host_path:/path of container 
                            
 
 networks:
-        flask-nw:             # name of network you want to create 
-                external: true
-
-volumes:
-        mysql-volume:         # name of volume you want to create 
-                driver: local
-                driver_opts:
-                        device: /home/chaitanya/projects/volume/flask_volume  # local (host) system path 
-                        type: none
-                        o: bind 
+        flask-nw:           
+            
